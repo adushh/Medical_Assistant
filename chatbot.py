@@ -1,7 +1,5 @@
 import os
 import streamlit as st
-import speech_recognition as sr
-import tempfile
 
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.chains import RetrievalQA
@@ -35,21 +33,6 @@ def load_llm(huggingface_repo_id, HF_TOKEN):
     )
     return llm
 
-def recognize_speech():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.write("🎤 Say...")
-        recognizer.adjust_for_ambient_noise(source)  # Reduce background noise
-        audio = recognizer.listen(source)  # Capture audio
-
-        try:
-            text = recognizer.recognize_google(audio)  # Convert speech to text
-            return text
-        except sr.UnknownValueError:
-            return "Sorry, could not understand the audio."
-        except sr.RequestError:
-            return "Could not request results.Can you check your internet connection."
-            
 def main():
     st.title("🩺 MediBot - Your AI Healthcare Assistant")
 
@@ -58,66 +41,8 @@ def main():
 
     for message in st.session_state.messages:
         st.chat_message(message['role']).markdown(message['content'])
-        
-    # --- Fix Input and Mic Button at the Bottom ---
-    st.markdown("""
-        <style>
-            .bottom-container {
-                position: fixed;
-                bottom: 0;
-                left: 0; 
-                width: 100%;
-                background: white;
-                padding: 10px;
-                border-top: 1px solid #ccc;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                z-index: 1000;
-            }
-            .stChatInput {
-                flex-grow: 1;
-                margin-right: 10px;
-            }
-            .stButton {
-                flex-shrink: 0;
-            }
-            .st-emotion-cache-1kyxreq{
-                bottom : 80px ! important;
-            }
-        </style>
-     """, unsafe_allow_html=True)    
-        
-    st.markdown("""   
-        <script>
-            function scrollToBottom() {
-                var chatContainer = window.parent.document.querySelector(".stChatMessage");
-                if (chatContainer) {
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                }
-            }
-            setInterval(scrollToBottom, 100);
-        </script>
-        
-    """, unsafe_allow_html=True)
-    #Layout :Text Input(Left) + Mic Button(Right)
-    
-    st.markdown('<div class="bottom-container">', unsafe_allow_html=True)
-    
-    col1, col2 = st.columns([5, 1])  
-    with col1:
-        prompt = st.chat_input("Type your message...")
 
-    with col2:
-        if st.button("🎙️"):
-            voice_text = recognize_speech()  # Get voice input
-            if voice_text and "Sorry, could not understand" not in voice_text:
-                st.write(f"**You said:** {voice_text}")
-                prompt = voice_text  # Assign voice text to chatbot input
-            else:
-                st.write("🚫 Could not understand the audio. Please try again.")
-
-    st.markdown('</div>', unsafe_allow_html=True)
+    prompt=st.chat_input("Pass your prompt here")
         
     if prompt:
         st.chat_message('user').markdown(prompt)
