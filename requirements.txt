@@ -4,11 +4,8 @@ langchain-huggingface==0.1.2
 faiss-cpu==1.10.0
 sentence-transformers==3.4.1
 streamlit==1.43.2
-speechrecognition==3.14.1
-pydub==0.25.1
 python-dotenv==1.0.1
 transformers==4.49.0
 torch==2.6.0
 pypdf==5.3.1
 huggingface-hub==0.29.3
-pyaudio==0.2.14
