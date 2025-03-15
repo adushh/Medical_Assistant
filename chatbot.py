@@ -49,12 +49,7 @@ def recognize_speech():
             return "Sorry, could not understand the audio."
         except sr.RequestError:
             return "Could not request results.Can you check your internet connection."
-        
-def text_to_speech(text):
-    engine = pyttsx3.init()
-    engine.say(text)
-    engine.runAndWait()
-
+            
 def main():
     st.title("🩺 MediBot - Your AI Healthcare Assistant")
 
